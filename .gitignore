@@ -1,0 +1,4 @@
+node_modules/
+credenciales.txt
+*.log
+.env
